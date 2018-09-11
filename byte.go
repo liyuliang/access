@@ -16,14 +16,17 @@ func ToByte(obj interface{}) []byte {
 		fieldName := structType.Field(i).Name
 		structField := structElem.FieldByName(fieldName)
 		fieldValue := structField.Interface()
+
 		switch fieldValue.(type) {
 
 		default:
-			if strings.Contains(structField.Type().String(),".") {
+			if strings.Contains(structField.Type().String(), "*") {
+				result += `"` + fieldName + `":"` + ObjToStr(fieldValue) + `",`
 
-			}else{
+			} else {
 				result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
 			}
+
 		case []string:
 			result += `"` + fieldName + `":[`
 			result += ValToStr(fieldValue)
@@ -69,5 +72,22 @@ func ValToStr(val interface{}) (result string) {
 		}
 	}
 
+	return result
+}
+
+func ObjToStr(obj interface{}) (result string) {
+
+	targetObj := reflect.ValueOf(obj)
+	structElem := targetObj.Elem()
+	structType := structElem.Type()
+	result += "["
+	for i := 0; i < structElem.NumField(); i++ {
+
+		fieldName := structType.Field(i).Name
+		fieldValue := structElem.FieldByName(fieldName).Interface()
+
+		result += `{"` + fieldName + `":"` + ValToStr(fieldValue) + `"},`
+	}
+	result += "]"
 	return result
 }

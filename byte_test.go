@@ -30,6 +30,7 @@ func TestToByte(t *testing.T) {
 		Brand: "BBBBB",
 		Price: 1828881.28,
 	}
+
 	p := new(People)
 	p.Name = "liyuliang"
 	p.Age = 25
