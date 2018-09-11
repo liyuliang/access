@@ -16,17 +16,19 @@ func ToByte(obj interface{}) []byte {
 		fieldName := structType.Field(i).Name
 		structField := structElem.FieldByName(fieldName)
 		fieldValue := structField.Interface()
-
-		switch structField.Type().String() {
+		switch fieldValue.(type) {
 
 		default:
-			result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
+			if strings.Contains(structField.Type().String(),".") {
 
-		case "[]string":
+			}else{
+				result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
+			}
+		case []string:
 			result += `"` + fieldName + `":[`
 			result += ValToStr(fieldValue)
 			result += "],"
-		case "map[string]string":
+		case map[string]string:
 			result += `"` + fieldName + `":[`
 			result += ValToStr(fieldValue)
 			result += "],"
@@ -58,18 +60,14 @@ func ValToStr(val interface{}) (result string) {
 		for _, value := range val.([]string) {
 			result += `"` + value + `",`
 		}
+
 	case map[string]string:
 		field := val.(map[string]string)
 
 		for key, value := range field {
 			result += `{"` + key + `":"` + value + `"},`
 		}
-
-		sz := len(result)
-
-		if sz > 0 && result[sz-1] == '+' {
-			result = result[:sz-1]
-		}
 	}
+
 	return result
 }
