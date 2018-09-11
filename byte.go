@@ -15,53 +15,61 @@ func ToByte(obj interface{}) []byte {
 	for i := 0; i < structElem.NumField(); i++ {
 		fieldName := structType.Field(i).Name
 		structField := structElem.FieldByName(fieldName)
+		fieldValue := structField.Interface()
 
 		switch structField.Type().String() {
 
-		case "string":
-			fieldValue := structField.String()
-			result += `"` + fieldName + `":"` + fieldValue + `",`
-		case "int":
-			fieldValue := structField.Interface().(int)
-			result += `"` + fieldName + `":"` + strconv.Itoa(fieldValue) + `",`
-			break
-		case "int32":
-			fieldValue := structField.Interface().(int32)
-			result += `"` + fieldName + `":"` + strconv.FormatInt(int64(fieldValue), 10) + `",`
-			break
-		case "int64":
-			fieldValue := structField.Interface().(int64)
-			result += `"` + fieldName + `":"` + strconv.FormatInt(fieldValue, 10) + `",`
-			break
-		case "float32":
-			fieldValue := structField.Interface().(float32)
-			result += `"` + fieldName + `":"` + strconv.FormatFloat(float64(fieldValue), 'f', -1, 32) + `",`
-			break
-		case "float64":
-			fieldValue := structField.Interface().(float64)
-			result += `"` + fieldName + `":"` + strconv.FormatFloat(fieldValue, 'f', -1, 64) + `",`
-			break
+		default:
+			result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
+
 		case "[]string":
-			fieldValue := structField.Interface().([]string)
 			result += `"` + fieldName + `":[`
-			for _, value := range fieldValue {
-				result += `"` + value + `",`
-			}
+			result += ValToStr(fieldValue)
 			result += "],"
-			break
 		case "map[string]string":
-			fieldValue := structField.Interface().(map[string]string)
 			result += `"` + fieldName + `":[`
-			for key, value := range fieldValue {
-				result += `{"` + key + `":"` + value + `"},`
-			}
+			result += ValToStr(fieldValue)
 			result += "],"
-			break
 		}
 	}
 
 	result += `}`
-	result = strings.Replace(result,",]","]",-1)
-	result = strings.Replace(result,",}","}",-1)
+	result = strings.Replace(result, ",]", "]", -1)
+	result = strings.Replace(result, ",}", "}", -1)
 	return []byte(result)
+}
+
+func ValToStr(val interface{}) (result string) {
+
+	switch val.(type) {
+	case string:
+		result = val.(string)
+	case int:
+		result = strconv.Itoa(val.(int))
+	case int32:
+		result = strconv.FormatInt(int64(val.(int32)), 10)
+	case int64:
+		result = strconv.FormatInt(val.(int64), 10)
+	case float32:
+		result = strconv.FormatFloat(float64(val.(float32)), 'f', -1, 32)
+	case float64:
+		result = strconv.FormatFloat(val.(float64), 'f', -1, 64)
+	case []string:
+		for _, value := range val.([]string) {
+			result += `"` + value + `",`
+		}
+	case map[string]string:
+		field := val.(map[string]string)
+
+		for key, value := range field {
+			result += `{"` + key + `":"` + value + `"},`
+		}
+
+		sz := len(result)
+
+		if sz > 0 && result[sz-1] == '+' {
+			result = result[:sz-1]
+		}
+	}
+	return result
 }
