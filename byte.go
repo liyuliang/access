@@ -7,6 +7,7 @@ import (
 )
 
 func ToByte(obj interface{}) []byte {
+
 	targetObj := reflect.ValueOf(obj)
 	structElem := targetObj.Elem()
 	structType := structElem.Type()
@@ -16,13 +17,13 @@ func ToByte(obj interface{}) []byte {
 		fieldName := structType.Field(i).Name
 		structField := structElem.FieldByName(fieldName)
 		fieldValue := structField.Interface()
+		fieldValueType := structField.Type().String()
 
 		switch fieldValue.(type) {
 
 		default:
-			if strings.Contains(structField.Type().String(), "*") {
+			if strings.Contains(fieldValueType, "*") {
 				result += `"` + fieldName + `":"` + ObjToStr(fieldValue) + `",`
-
 			} else {
 				result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
 			}
