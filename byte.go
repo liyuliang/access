@@ -73,6 +73,7 @@ func ValToStr(val interface{}) (result string) {
 		}
 	}
 
+	result = strings.TrimSpace(result)
 	return result
 }
 
