@@ -23,7 +23,7 @@ func ToByte(obj interface{}) []byte {
 
 		default:
 			if strings.Contains(fieldValueType, "*") {
-				result += `"` + fieldName + `":"` + ObjToStr(fieldValue) + `",`
+				result += `"` + fieldName + `":` + ObjToStr(fieldValue) + `,`
 			} else {
 				result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
 			}
@@ -33,6 +33,10 @@ func ToByte(obj interface{}) []byte {
 			result += ValToStr(fieldValue)
 			result += "],"
 		case map[string]string:
+			result += `"` + fieldName + `":{`
+			result += ValToStr(fieldValue)
+			result += "},"
+		case map[string]interface{}:
 			result += `"` + fieldName + `":{`
 			result += ValToStr(fieldValue)
 			result += "},"
@@ -68,7 +72,25 @@ func ValToStr(val interface{}) (result string) {
 	case map[string]string:
 		field := val.(map[string]string)
 		for key, value := range field {
-			result += `"` + key + `":"` + value + `",`
+			if strings.Index(value, "{") == 0 && strings.Index(value, "}") == (len(value)-1) {
+				result += `"` + key + `":` + value + `,`
+			} else {
+				result += `"` + key + `":"` + value + `",`
+			}
+		}
+
+	case map[string]interface{}:
+
+		field := val.(map[string]interface{})
+
+		for k, v := range field {
+
+			value := ValToStr(v)
+			if strings.Index(value, "{") == 0 && strings.Index(value, "}") == (len(value)-1) {
+				result += `"` + k + `":` + value + `,`
+			} else {
+				result += `"` + k + `":"` + value + `",`
+			}
 		}
 	}
 
@@ -87,7 +109,12 @@ func ObjToStr(obj interface{}) (result string) {
 		fieldName := structType.Field(i).Name
 		fieldValue := structElem.FieldByName(fieldName).Interface()
 
-		result += `"` + fieldName + `":"` + ValToStr(fieldValue) + `",`
+		value := ValToStr(fieldValue)
+		if strings.Index(value, "{") == 0 && strings.Index(value, "}") == (len(value)-1) {
+			result += `"` + fieldName + `":` + value + `,`
+		} else {
+			result += `"` + fieldName + `":"` + value + `",`
+		}
 	}
 	result += "}"
 	return result

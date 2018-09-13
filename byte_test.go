@@ -1,6 +1,8 @@
 package access
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestToByte(t *testing.T) {
 
@@ -54,9 +56,10 @@ func TestToByte(t *testing.T) {
 
 	data := ToByte(p)
 
-	expect := `{"Name":"liyuliang","Age":"25","Money1":"31","Money2":"25","Money3":"3333.33","Money4":"3333.33","Websites":["http://1","http://2","http://3","http://4"],"Account":{"ICBC":"100","IKBC":"20","CCBC":"300"},"MyCar1":"{"Brand":"AAAA","Price":"930382.33"}","MyCar2":"{"Brand":"BBBBB","Price":"1828881.28"}"}`
+
+	expect := `{"Name":"liyuliang","Age":"25","Money1":"31","Money2":"25","Money3":"3333.33","Money4":"3333.33","Websites":["http://1","http://2","http://3","http://4"],"Account":{"ICBC":"100","IKBC":"20","CCBC":"300"},"MyCar1":{"Brand":"AAAA","Price":"930382.33"},"MyCar2":{"Brand":"BBBBB","Price":"1828881.28"}}`
 	if string(data) != string(expect) {
 		t.Error("Object to byte json wrong, expect is ", string(expect), "\n but get :", string(data))
 	}
-
 }
+
