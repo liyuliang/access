@@ -70,14 +70,13 @@ func ValToStr(val interface{}) (result string) {
 		}
 
 	case map[string]string:
-		//field := val.(map[string]string)
-		field := SortMap(val.(map[string]string))
+		fields := SortMap(val.(map[string]string))
 
-		for key, value := range field {
-			if strings.Index(value, "{") == 0 && strings.Index(value, "}") == (len(value)-1) {
-				result += `"` + key + `":` + value + `,`
+		for _, field := range fields {
+			if strings.Index(field.Val, "{") == 0 && strings.Index(field.Val, "}") == (len(field.Val)-1) {
+				result += `"` + field.Key + `":` + field.Val + `,`
 			} else {
-				result += `"` + key + `":"` + value + `",`
+				result += `"` + field.Key + `":"` + field.Val + `",`
 			}
 		}
 
@@ -86,13 +85,13 @@ func ValToStr(val interface{}) (result string) {
 		for k, v := range val.(map[string]interface{}) {
 			field[k] = ValToStr(v)
 		}
-		field = SortMap(field)
+		fields := SortMap(field)
 
-		for k, v := range field {
-			if strings.Index(v, "{") == 0 && strings.Index(v, "}") == (len(v)-1) {
-				result += `"` + k + `":` + v + `,`
+		for _, field := range fields {
+			if strings.Index(field.Val, "{") == 0 && strings.Index(field.Val, "}") == (len(field.Val)-1) {
+				result += `"` + field.Key + `":` + field.Val + `,`
 			} else {
-				result += `"` + k + `":"` + v + `",`
+				result += `"` + field.Key + `":"` + field.Val + `",`
 			}
 		}
 	}

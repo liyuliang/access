@@ -2,17 +2,27 @@ package access
 
 import "sort"
 
-func SortMap(m map[string]string) (result map[string]string) {
+type pair struct {
+	Key string
+	Val string
+}
 
-	var keys []string
-	for k := range m {
+func SortMap(m map[string]string) (pairs []pair) {
+
+	keys := make([]string, len(m))
+	for k, _ := range m {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
-	result = make(map[string]string)
+	pairs = make([]pair, len(m))
+
 	for _, k := range keys {
-		result[k] = m[k]
+		pairs = append(pairs, pair{
+			Key: k,
+			Val: m[k],
+		})
 	}
-	return result
+
+	return pairs
 }
