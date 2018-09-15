@@ -9,7 +9,8 @@ func TestSortMap(t *testing.T) {
 	m["message"] = "xxxxxx"
 	m["list"] = "xxxxxx"
 
+	//SortMap(m)
 	for _, v := range SortMap(m) {
-		println(v.Key, v.Val)
+		println(v.Key + "~")
 	}
 }
