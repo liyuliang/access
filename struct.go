@@ -47,15 +47,14 @@ func Set(obj interface{}, fill interface{}) {
 	structType := structElem.Type()
 
 	for i := 0; i < structElem.NumField(); i++ {
-		
+
 		fieldName := structType.Field(i).Name
 		structField := structElem.FieldByName(fieldName)
 		fillStructField := fillStructElem.FieldByName(fieldName)
-		if structField.IsValid() && structField.CanSet() {
-			if structField.Type()  == fillStructField.Type() {
+		if structField.IsValid() && structField.CanSet() && fillStructField.IsValid() {
+			if structField.Type() == fillStructField.Type() {
 				structField.Set(fillStructField)
 			}
 		}
 	}
 }
-

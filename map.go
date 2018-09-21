@@ -1,8 +1,6 @@
 package access
 
-import (
-	"sort"
-)
+import "sort"
 
 type pair struct {
 	Key string
