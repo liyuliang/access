@@ -41,10 +41,11 @@ func SetMap(obj interface{}, m map[string]interface{}) {
 func Set(obj interface{}, fill interface{}) {
 
 	targetObj := reflect.ValueOf(obj)
-	fillObj := reflect.ValueOf(fill)
 	structElem := targetObj.Elem()
-	fillStructElem := fillObj.Elem()
 	structType := structElem.Type()
+
+	fillObj := reflect.ValueOf(fill)
+	fillStructElem := fillObj.Elem()
 
 	for i := 0; i < structElem.NumField(); i++ {
 
@@ -57,4 +58,18 @@ func Set(obj interface{}, fill interface{}) {
 			}
 		}
 	}
+}
+
+
+func StructKeys(obj interface{}) (keys []string) {
+	targetObj := reflect.ValueOf(obj)
+	structElem := targetObj.Elem()
+	structType := structElem.Type()
+
+	for i := 0; i < structElem.NumField(); i++ {
+
+		fieldName := structType.Field(i).Name
+		keys = append(keys, fieldName)
+	}
+	return keys
 }
