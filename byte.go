@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"encoding/json"
 )
 
 func ToByte(obj interface{}) []byte {
@@ -64,6 +65,8 @@ func ValToStr(val interface{}) (result string) {
 		result = strconv.FormatFloat(float64(val.(float32)), 'f', -1, 32)
 	case float64:
 		result = strconv.FormatFloat(val.(float64), 'f', -1, 64)
+	case json.Number:
+		result = val.(json.Number).String()
 	case []string:
 		for _, value := range val.([]string) {
 			result += `"` + value + `",`
