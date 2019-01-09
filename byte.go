@@ -71,7 +71,7 @@ func ValToStr(val interface{}) (result string) {
 		for _, value := range val.([]string) {
 			result += `"` + value + `",`
 		}
-
+		result = result[:len(result)-1]
 	case map[string]string:
 		fields := SortMap(val.(map[string]string))
 
