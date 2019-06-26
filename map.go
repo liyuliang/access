@@ -2,12 +2,12 @@ package access
 
 import "sort"
 
-type pair struct {
+type Pairs struct {
 	Key string
 	Val string
 }
 
-func SortMap(m map[string]string) (pairs []pair) {
+func SortMap(m map[string]string) (pairs []Pairs) {
 
 	keys := []string{}
 	for k, _ := range m {
@@ -18,7 +18,7 @@ func SortMap(m map[string]string) (pairs []pair) {
 	for _, k := range keys {
 		v := m[k]
 		if k != "" && v != "" {
-			pairs = append(pairs, pair{
+			pairs = append(pairs, Pairs{
 				Key: k,
 				Val: v,
 			})

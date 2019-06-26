@@ -56,10 +56,43 @@ func TestToByte(t *testing.T) {
 
 	data := ToByte(p)
 
-
 	expect := `{"Name":"liyuliang","Age":"25","Money1":"31","Money2":"25","Money3":"3333.33","Money4":"3333.33","Websites":["http://1","http://2","http://3","http://4"],"Account":{"CCBC":"300","ICBC":"100","IKBC":"20"},"MyCar1":{"Brand":"AAAA","Price":"930382.33"},"MyCar2":{"Brand":"BBBBB","Price":"1828881.28"}}`
 	if string(data) != string(expect) {
 		t.Error("Object to byte json wrong, expect is ", string(expect), "\n but get :", string(data))
 	}
 }
 
+func TestPairsToByte(t *testing.T) {
+	type Obj struct {
+		P []Pairs
+	}
+	var pairs []Pairs
+	pair1 := Pairs{
+		"c",
+		"val1",
+	}
+	pair2 := Pairs{
+		"a",
+		"val2",
+	}
+	pair3 := Pairs{
+		"g",
+		"val3",
+	}
+	pair4 := Pairs{
+		"d",
+		"val4",
+	}
+	pairs = append(pairs, pair1)
+	pairs = append(pairs, pair2)
+	pairs = append(pairs, pair3)
+	pairs = append(pairs, pair4)
+
+	o := new(Obj)
+	o.P = pairs
+	data := ToByte(o)
+	expect := `{"P":{"c":"val1","a":"val2","g":"val3","d":"val4"}}`
+	if string(data) != string(expect) {
+		t.Error("Object with Pairs to byte json wrong, expect is ", string(expect), "\n but get :", string(data))
+	}
+}

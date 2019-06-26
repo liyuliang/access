@@ -1,10 +1,10 @@
 package access
 
 import (
+	"encoding/json"
 	"reflect"
 	"strconv"
 	"strings"
-	"encoding/json"
 )
 
 func ToByte(obj interface{}) []byte {
@@ -38,6 +38,10 @@ func ToByte(obj interface{}) []byte {
 			result += ValToStr(fieldValue)
 			result += "},"
 		case map[string]interface{}:
+			result += `"` + fieldName + `":{`
+			result += ValToStr(fieldValue)
+			result += "},"
+		case []Pairs:
 			result += `"` + fieldName + `":{`
 			result += ValToStr(fieldValue)
 			result += "},"
@@ -93,6 +97,14 @@ func ValToStr(val interface{}) (result string) {
 		fields := SortMap(field)
 
 		for _, field := range fields {
+			if strings.Index(field.Val, "{") == 0 && strings.Index(field.Val, "}") == (len(field.Val)-1) {
+				result += `"` + field.Key + `":` + field.Val + `,`
+			} else {
+				result += `"` + field.Key + `":"` + field.Val + `",`
+			}
+		}
+	case []Pairs:
+		for _, field := range val.([]Pairs) {
 			if strings.Index(field.Val, "{") == 0 && strings.Index(field.Val, "}") == (len(field.Val)-1) {
 				result += `"` + field.Key + `":` + field.Val + `,`
 			} else {
