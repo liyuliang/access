@@ -90,7 +90,7 @@ func ValToStr(val interface{}) (result string) {
 		}
 
 	case map[string]interface{}:
-		field := val.(map[string]string)
+		field := make(map[string]string)
 		for k, v := range val.(map[string]interface{}) {
 			field[k] = ValToStr(v)
 		}
